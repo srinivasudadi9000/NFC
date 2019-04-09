@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.srinivas.NFC_CARD">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -15,12 +20,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="com.srinivas.NFC_CARD.NFCReader"></activity>
-        <activity android:name="com.srinivas.NFC_CARD.Login" />
-        <activity android:name="com.srinivas.NFC_CARD.MainActivity" />
-        <activity android:name="com.srinivas.NFC_CARD.AdminRegistration" />
-        <activity android:name="com.srinivas.NFC_CARD.Splash">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".AllDetails"></activity>
+        <activity android:name=".GateEnroll" />
+        <activity android:name=".Home" />
+        <activity android:name=".Login" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivityView" />
+        <activity android:name=".EmployEnroll" />
+        <activity android:name=".VehicleEnroll" />
+        <activity android:name=".Enrollments" />
+        <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +45,16 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@layout/provider_paths" />
+        </provider>
     </application>
 
 </manifest>

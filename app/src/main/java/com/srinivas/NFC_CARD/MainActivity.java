@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
-import android.os.Parcelable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends Activity implements Listener {
@@ -48,7 +47,7 @@ public class MainActivity extends Activity implements Listener {
        /* new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent registration = new Intent(MainActivity.this, AdminRegistration.class);
+                Intent registration = new Intent(MainActivity.this, VehicleEnroll.class);
                 registration.putExtra("payload", "dado");
                 startActivity(registration);
             }
@@ -143,6 +142,22 @@ public class MainActivity extends Activity implements Listener {
         if (mNfcAdapter != null)
             mNfcAdapter.disableForegroundDispatch(this);
     }
+    private String bytesToHexString(byte[] src) {
+        StringBuilder stringBuilder = new StringBuilder("0x");
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+
+        char[] buffer = new char[2];
+        for (int i = 0; i < src.length; i++) {
+            buffer[0] = Character.forDigit((src[i] >>> 4) & 0x0F, 16);
+            buffer[1] = Character.forDigit(src[i] & 0x0F, 16);
+            System.out.println(buffer);
+            stringBuilder.append(buffer);
+        }
+        System.out.println("Chudra dadi "+stringBuilder.toString());
+        return stringBuilder.toString();
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -153,28 +168,49 @@ public class MainActivity extends Activity implements Listener {
         if (tag != null) {
             Toast.makeText(this, getString(R.string.message_tag_detected), Toast.LENGTH_SHORT).show();
             Ndef ndef = Ndef.get(tag);
+            msg_txt.setText(bytesToHexString(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)));
             if (!msg_txt.getText().toString().contains("payload")) {
+                switch (getIntent().getStringExtra("type")) {
+                    case "gate":
 
-                System.out.println("Dadi seee here " + ndef.getTag().toString());
-                System.out.println("Dadi seee tpe  " + ndef.getType().toString());
-                System.out.println("Dadi seee getMaxSize " + ndef.getMaxSize());
+                        Intent gate = new Intent(MainActivity.this, GateEnroll.class);
+                        gate.putExtra("payload", bytesToHexString(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)));
+                        startActivity(gate);
+                        break;
+                    case "vehicle":
+                        Intent vehicle = new Intent(MainActivity.this, VehicleEnroll.class);
+                        vehicle.putExtra("payload", bytesToHexString(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)));
+                        startActivity(vehicle);
+                        break;
+                    case "enroll_employ":
+                        Intent enroll_employ = new Intent(MainActivity.this, EmployEnroll.class);
+                        enroll_employ.putExtra("payload", bytesToHexString(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)));
+                        startActivity(enroll_employ);
+                        break;
+
+                }
+                System.out.println("Dadi what is this " + tag.getId().toString());
+
+
+                //System.out.println("Dadi seee here " + ndef.getTag().toString());
+                //  System.out.println("Dadi seee tpe  " + ndef.getType().toString());
+               /* System.out.println("Dadi seee getMaxSize " + ndef.getMaxSize());
                 System.out.println("Dadi seee getCachedNdefMessage  " + ndef.getCachedNdefMessage().toString());
-
-                Parcelable[] rawMessages =
+*/
+            /*    Parcelable[] rawMessages =
                         intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-                System.out.println("Rawmessage lenght " + rawMessages.length);
+               // System.out.println("Rawmessage lenght " + rawMessages.length);
                 String x = "NFC Card Data Display : \n ";
                 if (rawMessages != null) {
                     NdefMessage[] messages = new NdefMessage[rawMessages.length];
                     for (int i = 0; i < rawMessages.length; i++) {
                         messages[i] = (NdefMessage) rawMessages[i];
-
                         System.out.println("Seedadi ....." + messages[i].toString());
                         x = x + messages[i].toString();
                         msg_txt.setText(x);
                     }
                     System.out.println("Seedadi boabeee ....." + x.toString());
-                    Intent registration = new Intent(MainActivity.this, AdminRegistration.class);
+                    Intent registration = new Intent(MainActivity.this, VehicleEnroll.class);
                     registration.putExtra("payload", msg_txt.getText().toString());
                     startActivity(registration);
                 }
@@ -192,7 +228,7 @@ public class MainActivity extends Activity implements Listener {
                         mNfcReadFragment = (NFCReadFragment) getFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
                         mNfcReadFragment.onNfcDetected(ndef);
                     }
-                }
+                }*/
             } else {
                 Toast.makeText(getBaseContext(), "Already Scanned Card Thankyou ", Toast.LENGTH_SHORT).show();
             }

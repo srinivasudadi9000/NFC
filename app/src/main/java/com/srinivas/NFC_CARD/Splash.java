@@ -23,7 +23,7 @@ public class Splash extends Activity {
         myll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainaactivity = new Intent(Splash.this, NFCReader.class);
+                Intent mainaactivity = new Intent(Splash.this, Home.class);
                 startActivity(mainaactivity);
             }
         });
@@ -60,7 +60,7 @@ public class Splash extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(Splash.this, NFCReader.class);
+                Intent i = new Intent(Splash.this, Home.class);
                 startActivity(i);
             }
         }, 2000);
