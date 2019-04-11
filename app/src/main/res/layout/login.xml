@@ -41,6 +41,7 @@
                 android:textColorHint="@color/black">
 
                 <EditText
+                    android:text="admin1"
                     android:id="@+id/username_et"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
@@ -61,6 +62,7 @@
                 android:textColorHint="@color/black">
 
                 <EditText
+                    android:text="primal@1"
                     android:id="@+id/password_et"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"

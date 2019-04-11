@@ -28,6 +28,7 @@
         <activity android:name=".Login" />
         <activity android:name=".MainActivity" />
         <activity android:name=".MainActivityView" />
+        <activity android:name=".GateLoginScan" />
         <activity android:name=".EmployEnroll" />
         <activity android:name=".VehicleEnroll" />
         <activity android:name=".Enrollments" />

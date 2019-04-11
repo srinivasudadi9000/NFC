@@ -2,6 +2,7 @@ package com.srinivas.NFC_CARD;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,11 +26,18 @@ public class Home extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login_btn:
-                Intent vehicle = new Intent(Home.this, Login.class);
-                startActivity(vehicle);
+                SharedPreferences gatedetals = getSharedPreferences("GATE", MODE_PRIVATE);
+                if (gatedetals.getString("gateID","").length()>0){
+                    Intent vehicle = new Intent(Home.this, MainActivityView.class);
+                    startActivity(vehicle);
+                }else {
+                    Intent vehicle = new Intent(Home.this, GateLoginScan.class);
+                    startActivity(vehicle);
+                }
+
                 break;
             case R.id.enroll_btn:
-                Intent enroll = new Intent(Home.this, Enrollments.class);
+                Intent enroll = new Intent(Home.this, Login.class);
                 startActivity(enroll);
                 break;
         }

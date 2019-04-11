@@ -32,7 +32,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:textColor="@color/white"
-        android:text="Login"
+        android:text="Gate Login"
         android:background="@color/bgcolor"
         android:layout_width="200dp"
         android:layout_height="45dp" />

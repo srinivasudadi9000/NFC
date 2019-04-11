@@ -2,6 +2,7 @@ package com.srinivas.NFC_CARD;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +33,8 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
     Spinner gatetype_spinner;
     String gatetype;
     AlertDialog show;
+    ProgressDialog progressdilaog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,7 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
                 gatetype = parent.getItemAtPosition(position).toString();
                 Toast.makeText(getBaseContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 gatetype = "not";
@@ -61,7 +65,12 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
         switch (v.getId()) {
             case R.id.save_img:
                 try {
-                    Getlogin(id_et.getText().toString(),id_et.getText().toString(),gatetype,gate_name.getText().toString());
+                    progressdilaog = new ProgressDialog(GateEnroll.this);
+                    progressdilaog.setTitle("");
+                    progressdilaog.setMessage("Please wait");
+                    progressdilaog.setCancelable(false);
+                    progressdilaog.show();
+                    Getlogin(id_et.getText().toString(), id_et.getText().toString(), gatetype, gate_name.getText().toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -91,7 +100,7 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
-                //login.setVisibility(View.GONE);
+                progressdilaog.dismiss();
                 Log.d("result dadi", e.getMessage().toString());
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
@@ -105,9 +114,10 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
                 //pd.dismiss();
             }
 
+
             @Override
             public void onResponse(okhttp3.Call call, final okhttp3.Response response) throws IOException {
-                // pd.dismiss();
+                progressdilaog.dismiss();
                 if (!response.isSuccessful()) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -139,7 +149,7 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
         View alertView = inflater.inflate(R.layout.warning_dialog, null);
         alertDialog.setView(alertView);
         alertDialog.setTitle("Alert");
-         alertDialog.setMessage(msg);
+        alertDialog.setMessage(msg);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

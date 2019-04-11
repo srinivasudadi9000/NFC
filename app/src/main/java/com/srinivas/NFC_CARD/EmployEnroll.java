@@ -2,6 +2,7 @@ package com.srinivas.NFC_CARD;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -47,6 +48,8 @@ public class EmployEnroll extends Activity implements View.OnClickListener {
     String pic = "null", clicked = "not";
     int O_IMAGE2 = 2;
     AlertDialog show;
+    ProgressDialog progressdilaog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,11 @@ public class EmployEnroll extends Activity implements View.OnClickListener {
                 Toast.makeText(getBaseContext(), "Successfully Registration Completed Thankyou ", Toast.LENGTH_SHORT).show();
                 //finish();
                 try {
+                    progressdilaog = new ProgressDialog(EmployEnroll.this);
+                    progressdilaog.setTitle("");
+                    progressdilaog.setMessage("Please wait");
+                    progressdilaog.setCancelable(false);
+                    progressdilaog.show();
                     Getlogin(emp_id.getText().toString(),
                             emp_name.getText().toString(), id_et.getText().toString(), department_name.getText().toString(),
                             designation.getText().toString());
@@ -145,6 +153,7 @@ public class EmployEnroll extends Activity implements View.OnClickListener {
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
                 //login.setVisibility(View.GONE);
+                progressdilaog.dismiss();
                 Log.d("result dadi", e.getMessage().toString());
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
@@ -160,7 +169,7 @@ public class EmployEnroll extends Activity implements View.OnClickListener {
 
             @Override
             public void onResponse(okhttp3.Call call, final okhttp3.Response response) throws IOException {
-                // pd.dismiss();
+                progressdilaog.dismiss();
                 if (!response.isSuccessful()) {
                     runOnUiThread(new Runnable() {
                         @Override
