@@ -193,55 +193,14 @@ public class MainActivityView extends Activity implements Listener {
             Ndef ndef = Ndef.get(tag);
             msg_txt.setText(bytesToHexString(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)));
 
-
-            if (!msg_txt.getText().toString().contains("payload")) {
+            if (msg_txt.getText().toString().length()>0) {
 
                 try {
                     fetchUser(bytesToHexString(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-               /* Intent registration = new Intent(MainActivityView.this, AllDetails.class);
-                registration.putExtra("payload", tag.getId().toString());
-                startActivity(registration);
-*/
-                //System.out.println("Dadi seee here " + ndef.getTag().toString());
-                //  System.out.println("Dadi seee tpe  " + ndef.getType().toString());
-               /* System.out.println("Dadi seee getMaxSize " + ndef.getMaxSize());
-                System.out.println("Dadi seee getCachedNdefMessage  " + ndef.getCachedNdefMessage().toString());
-*/
-            /*    Parcelable[] rawMessages =
-                        intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-               // System.out.println("Rawmessage lenght " + rawMessages.length);
-                String x = "NFC Card Data Display : \n ";
-                if (rawMessages != null) {
-                    NdefMessage[] messages = new NdefMessage[rawMessages.length];
-                    for (int i = 0; i < rawMessages.length; i++) {
-                        messages[i] = (NdefMessage) rawMessages[i];
-                        System.out.println("Seedadi ....." + messages[i].toString());
-                        x = x + messages[i].toString();
-                        msg_txt.setText(x);
-                    }
-                    System.out.println("Seedadi boabeee ....." + x.toString());
-                    Intent registration = new Intent(MainActivity.this, VehicleEnroll.class);
-                    registration.putExtra("payload", msg_txt.getText().toString());
-                    startActivity(registration);
-                }
 
-                if (isDialogDisplayed) {
-
-                    if (isWrite) {
-
-                        String messageToWrite = mEtMessage.getText().toString();
-                        mNfcWriteFragment = (NFCWriteFragment) getFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
-                        mNfcWriteFragment.onNfcDetected(ndef, messageToWrite);
-
-                    } else {
-
-                        mNfcReadFragment = (NFCReadFragment) getFragmentManager().findFragmentByTag(NFCReadFragment.TAG);
-                        mNfcReadFragment.onNfcDetected(ndef);
-                    }
-                }*/
             } else {
                 Toast.makeText(getBaseContext(), "Already Scanned Card Thankyou ", Toast.LENGTH_SHORT).show();
             }
@@ -277,7 +236,7 @@ public class MainActivityView extends Activity implements Listener {
         });
     }
 
-    public void showAlert(String msg, final String tagid) {
+    public void showAlert(String msg, final String tagid, final String type) {
 
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivityView.this);
         LayoutInflater inflater = ((Activity) MainActivityView.this).getLayoutInflater();
@@ -299,6 +258,7 @@ public class MainActivityView extends Activity implements Listener {
         alertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                show.dismiss();
                 try {
                     progressdilaog = new ProgressDialog(MainActivityView.this);
                     progressdilaog.setTitle("");
@@ -306,12 +266,16 @@ public class MainActivityView extends Activity implements Listener {
                     progressdilaog.setCancelable(false);
                     progressdilaog.show();
 
-                    Getlogin(tagid);
+                    if (!type.equals("")){
+                        Getlogin(tagid,type);
+                    }else {
+                        progressdilaog.dismiss();
+                    }
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
 
-                show.dismiss();
+
             }
         });
     }
@@ -400,18 +364,19 @@ public class MainActivityView extends Activity implements Listener {
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }*/
+                                    msg_txt.setText("");
                                     try {
                                         if (js.getString("type").equals("2")) {
                                             showAlert("EmpId :" + js.getString("empid") + "\nVehicleNO : " + js.getString("vehiclenumber")
                                                     + "\nVehicleNFCID : " +
-                                                    js.getString("vehicleNFCID"), tagid);
+                                                    js.getString("vehicleNFCID"), tagid,"2");
 
                                         } else {
                                             showAlert("EmpId :" + js.getString("empId") + "\nEmpNFCID : " + js.getString("empnfcId")
                                                     + "\nName : " +
                                                     js.getString("name") + " \nEmai : l" + js.getString("email") + "\nPhone : " +
                                                     js.getString("phone") + "\nDesignation : " + js.getString("designation") +
-                                                    "\nDepartment : " + js.getString("department"), tagid);
+                                                    "\nDepartment : " + js.getString("department"), tagid,"1");
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -422,17 +387,17 @@ public class MainActivityView extends Activity implements Listener {
 
                         }
                     } catch (JSONException e) {
-
                         try {
                             final JSONObject jsonObject = new JSONObject(responseBody);
-                            System.out.println("Very good boy " + jsonObject.getString("success") + " msg " + jsonObject.getString("message"));
+                            System.out.println("Very good boy " + jsonObject.getString("success") + " msg " +
+                                    jsonObject.getString("message"));
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     // Stuff that updates the UI
 
                                     try {
-                                        showAlert(jsonObject.getString("message"), "");
+                                        showAlert(jsonObject.getString("message"), "","");
                                     } catch (JSONException e1) {
                                         e1.printStackTrace();
                                     }
@@ -453,7 +418,7 @@ public class MainActivityView extends Activity implements Listener {
     }
 
 
-    public void Getlogin(String tag) throws IOException {
+    public void Getlogin(String tag,String type) throws IOException {
         SharedPreferences gatedetals = getSharedPreferences("GATE", MODE_PRIVATE);
 
         // avoid creating several instances, should be singleon
@@ -462,7 +427,7 @@ public class MainActivityView extends Activity implements Listener {
         RequestBody formBody = new FormBody.Builder()
                 .add("gatenfcid", gatedetals.getString("gateID", ""))
                 .add("nfcid", tag)
-                .add("type", gatedetals.getString("gateType", ""))
+                .add("type", type)
                 .build();
         Request request = new Request.Builder()
                 .header("Accept", "application/json")
@@ -471,6 +436,7 @@ public class MainActivityView extends Activity implements Listener {
                 .post(formBody)
                 .build();
 
+        System.out.println("Table reprot "+tag+" type "+gatedetals.getString("gateType",""));
 
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override

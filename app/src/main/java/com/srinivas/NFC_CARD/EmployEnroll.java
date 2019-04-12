@@ -80,7 +80,7 @@ public class EmployEnroll extends Activity implements View.OnClickListener {
                     progressdilaog.setCancelable(false);
                     progressdilaog.show();
                     Getlogin(emp_id.getText().toString(),
-                            emp_name.getText().toString(), id_et.getText().toString(), department_name.getText().toString(),
+                            id_et.getText().toString(), emp_name.getText().toString(), department_name.getText().toString(),
                             designation.getText().toString());
                 } catch (IOException e) {
                     e.printStackTrace();

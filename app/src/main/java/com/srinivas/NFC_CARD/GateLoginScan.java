@@ -207,9 +207,20 @@ public class GateLoginScan extends Activity implements Listener {
             @Override
             public void onClick(View v) {
                 show.dismiss();
-                Intent mainactivityview = new Intent(GateLoginScan.this, MainActivityView.class);
-                startActivity(mainactivityview);
-                finish();
+                SharedPreferences gatedetals = getSharedPreferences("GATE", MODE_PRIVATE);
+                if (gatedetals.getString("gateNFCID", "").toString().length()>0){
+                    Intent mainactivityview = new Intent(GateLoginScan.this, MainActivityView.class);
+                    startActivity(mainactivityview);
+                    finish();
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Stuff that updates the UI
+                          Toast.makeText(getBaseContext(),"Gate Login Mandatory ",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }
@@ -229,8 +240,8 @@ public class GateLoginScan extends Activity implements Listener {
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
                 //  .url("http://primal.reassuregroups.com/api/GetData/fetchUser/"+getIntent().getStringExtra("payload"))
-               // .url("http://primal.reassuregroups.com/api/GetData/Gate/1223")
-                  .url("http://primal.reassuregroups.com/api/GetData/fetchUser/"+tagid)
+                .url("http://primal.reassuregroups.com/api/GetData/Gate/"+tagid)
+                //  .url("http://primal.reassuregroups.com/api/GetData/fetchUser/"+tagid)
                 .get()
                 .build();
 
@@ -311,6 +322,11 @@ public class GateLoginScan extends Activity implements Listener {
 
                         try {
                             final JSONObject jsonObject = new JSONObject(responseBody);
+                            SharedPreferences.Editor gatedetals = getSharedPreferences("GATE", MODE_PRIVATE).edit();
+                            gatedetals.putString("gateID", "");
+                            gatedetals.putString("gateNFCID", "");
+                            gatedetals.putString("gateType","");
+                            gatedetals.commit();
                             System.out.println("Very good boy " + jsonObject.getString("success") + " msg " + jsonObject.getString("message"));
                             runOnUiThread(new Runnable() {
                                 @Override
