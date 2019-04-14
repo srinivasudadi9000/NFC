@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +40,7 @@ public class MainActivityView extends Activity implements Listener {
     private EditText mEtMessage;
     private Button mBtWrite;
     private Button mBtRead;
-
+    private ImageView logout;
     private NFCWriteFragment mNfcWriteFragment;
     private NFCReadFragment mNfcReadFragment;
 
@@ -48,15 +49,34 @@ public class MainActivityView extends Activity implements Listener {
 
     private NfcAdapter mNfcAdapter;
 
-    TextView msg_txt;
+    TextView msg_txt,gateid_name;
     AlertDialog show;
     ProgressDialog progressdilaog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_view);
         msg_txt = findViewById(R.id.msg_txt);
+        gateid_name = findViewById(R.id.gateid_name);
+        logout = findViewById(R.id.logout);
+        SharedPreferences gatedetals = getSharedPreferences("GATE", MODE_PRIVATE);
+        gateid_name.setText("Gate ID "+gatedetals.getString("gateNFCID", "")+
+                "\n Gate Type : "+gatedetals.getString("gateType",""));
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor gatedetals = getSharedPreferences("GATE", MODE_PRIVATE).edit();
+                gatedetals.putString("gateID", "");
+                gatedetals.putString("gateNFCID", "");
+                gatedetals.putString("gateType","");
+                gatedetals.commit();
+                Intent home = new Intent(MainActivityView.this,Home.class);
+                home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(home);
+                finish();
+            }
+        });
         initViews();
         initNFC();
        /* new Handler().postDelayed(new Runnable() {
@@ -316,7 +336,7 @@ public class MainActivityView extends Activity implements Listener {
                     @Override
                     public void run() {
                         // Stuff that updates the UI
-                        Toast.makeText(getBaseContext(), "IMEI Number or password doesnt exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), "Please try again!!", Toast.LENGTH_SHORT).show();
                     }
                 });
 

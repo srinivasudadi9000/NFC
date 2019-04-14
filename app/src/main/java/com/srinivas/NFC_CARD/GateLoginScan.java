@@ -307,7 +307,7 @@ public class GateLoginScan extends Activity implements Listener {
                                         gatedetals.putString("gateID", js.getString("gateID"));
                                         gatedetals.putString("gateNFCID", js.getString("gateNFCID"));
                                         gatedetals.putString("gateType", js.getString("gateType"));
-                                        gatedetals.commit();
+                                         gatedetals.commit();
 
 
                                     } catch (JSONException e) {
