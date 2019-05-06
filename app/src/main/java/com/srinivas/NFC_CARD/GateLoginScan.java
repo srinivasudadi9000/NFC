@@ -316,7 +316,6 @@ public class GateLoginScan extends Activity implements Listener {
                                 }
                             });
 
-
                         }
                     } catch (JSONException e) {
 

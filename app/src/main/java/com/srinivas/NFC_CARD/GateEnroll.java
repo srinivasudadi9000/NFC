@@ -48,7 +48,7 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 gatetype = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getBaseContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getBaseContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -107,7 +107,7 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
                     @Override
                     public void run() {
                         // Stuff that updates the UI
-                        Toast.makeText(getBaseContext(), "IMEI Number or password doesnt exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), "Please wait connecting to server", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -123,7 +123,7 @@ public class GateEnroll extends AppCompatActivity implements View.OnClickListene
                         @Override
                         public void run() {
                             // Stuff that updates the UI
-                            Toast.makeText(getBaseContext(), "IMEI Number or password doesnt exist", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), "Server busy at the moment ", Toast.LENGTH_SHORT).show();
                         }
                     });
 

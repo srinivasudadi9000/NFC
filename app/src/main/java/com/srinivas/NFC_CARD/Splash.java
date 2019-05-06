@@ -3,6 +3,7 @@ package com.srinivas.NFC_CARD;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -20,6 +21,9 @@ public class Splash extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         myll = findViewById(R.id.myll);
+        SharedPreferences.Editor validate = getSharedPreferences("Validate", MODE_PRIVATE).edit();
+        validate.putString("validae", "notdone");
+        validate.commit();
         myll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +54,7 @@ public class Splash extends Activity {
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.NFC, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
         } else {
-            Toast.makeText(getBaseContext(), "All permissions granted.", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(getBaseContext(), "All permissions granted.", Toast.LENGTH_SHORT).show();
             callintent();
 
         }

@@ -12,6 +12,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -238,19 +239,26 @@ public class MainActivityView extends Activity implements Listener {
         alertDialog.setTitle("Log Alert");
         alertDialog.setMessage(msg);
 
+        final Button alertButton = (Button) alertView.findViewById(R.id.btn_ok);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // Stuff that updates the UI
                 show = alertDialog.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        show.dismiss();
+                    }
+                },500);
             }
         });
 
 
-        Button alertButton = (Button) alertView.findViewById(R.id.btn_ok);
         alertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 show.dismiss();
             }
         });
@@ -274,7 +282,13 @@ public class MainActivityView extends Activity implements Listener {
         });
 
 
-        Button alertButton = (Button) alertView.findViewById(R.id.btn_ok);
+        final Button alertButton = (Button) alertView.findViewById(R.id.btn_ok);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                alertButton.performClick();
+            }
+        },500);
         alertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
